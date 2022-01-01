@@ -63,25 +63,31 @@ def searchArtist(aname):
 
 
 # Delete account
-
-
-def delete_account():
+@app.route('/delete')
+def delete_account(memID):
     conn = get_db_connection()
-    enter_memID = input('enter member id: ')
-    posts = conn.execute('DELETE * FROM MEMBER WHERE MID = ?', (enter_memID))
+    result = conn.execute(
+        'DELETE * FROM MEMBER WHERE MID = ?', (memID)).fetchone()
     conn.commit()
     conn.close()
-    return render_template('index.html', posts=posts)
+    if result is None:
+        return "the account is not exist."
+    else:
+        return "successful delete."
+
 # login
 
 
-def login():
+@app.route('/login')
+def login(memID):
     conn = get_db_connection()
-    enter_memID = input('enter member id: ')
-    posts = conn.execute('SELECT * FROM MEMBER WHERE MID = ?', (enter_memID))
-    conn.commit()
+    result = conn.execute(
+        'SELECT * FROM MEMBER WHERE MID = ?', (memID)).fetchone()
     conn.close()
-    return render_template('index.html', posts=posts)
+    if result is None:
+        return None
+    else:
+        return (conn.MID, conn.MName)
 
 
 if __name__ == '__main__':
