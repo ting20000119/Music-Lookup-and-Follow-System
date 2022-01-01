@@ -40,17 +40,17 @@ CREATE TABLE member (
 
 CREATE TABLE follow_artist (
   faaid VARCHAR REFERENCES artist (aid),
-  famid VARCHAR REFERENCES member (mid)
+  famid VARCHAR REFERENCES member (mid) ON DELETE CASCADE
 );
 
 CREATE TABLE follow_producer (
   fppid VARCHAR REFERENCES producer (pid),
-  fpmid VARCHAR REFERENCES member (mid)
+  fpmid VARCHAR REFERENCES member (mid) ON DELETE CASCADE
 );
 
 CREATE TABLE follow_songwriter (
   fswid VARCHAR REFERENCES songwriter (wid),
-  fsmid VARCHAR REFERENCES member (mid)
+  fsmid VARCHAR REFERENCES member (mid) ON DELETE CASCADE
 );
 
 CREATE TABLE sing (
@@ -69,6 +69,6 @@ CREATE TABLE compose (
 );
 
 CREATE TABLE add_list (
-  almid VARCHAR REFERENCES member (mid),
+  almid VARCHAR REFERENCES member (mid) ON DELETE CASCADE,
   alsid VARCHAR REFERENCES song (sid)
 );
