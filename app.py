@@ -36,7 +36,10 @@ def songList(mid):
         'Select song.title,song.genre,song.year,song.language from song join add_list on song.sid = add_list.alsid where add_list.almid = ?', [mid]).fetchall()
     conn.commit()
     conn.close()
-    return app.response_class(response=json.dumps([dict(s) for s in songs]), status=200, mimetype='application/json')
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 
 @app.route('/listArtist/<string:mid>', methods=['GET'])
@@ -47,7 +50,10 @@ def artistList(mid):
         'Select artist.aname,artist.abirth,artist.agender,artist.acountry from artist join follow_artist on artist.aid = follow_artist.faaid where follow_artist.famid = ?', [mid]).fetchall()
     conn.commit()
     conn.close()
-    return app.response_class(response=json.dumps([dict(a) for a in artists]), status=200, mimetype='application/json')
+    res = app.response_class(response=json.dumps(
+        [dict(a) for a in artists]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 
 @app.route('/listSongWriter/<string:mid>', methods=['GET'])
@@ -58,7 +64,10 @@ def songWriterList(mid):
         'Select songwriter.wname,songwriter.wbirth,songwriter.wgender,songwriter.wcountry from songwriter join follow_songwriter on songwriter.wid = follow_songwriter.fswid where follow_songwriter.fsmid = ?', [mid]).fetchall()
     conn.commit()
     conn.close()
-    return app.response_class(response=json.dumps([dict(w) for w in songwriters]), status=200, mimetype='application/json')
+    res = app.response_class(response=json.dumps(
+        [dict(w) for w in songwriters]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 
 @app.route('/listProducer/<string:mid>', methods=['GET'])
@@ -69,7 +78,10 @@ def producerList(mid):
         'Select producer.pname,producer.pbirth,producer.pgender,producer.pcountry from producer join follow_producer on producer.pid = follow_producer.fppid where follow_producer.fpmid = ?', [mid]).fetchall()
     conn.commit()
     conn.close()
-    return app.response_class(response=json.dumps([dict(w) for w in songwriters]), status=200, mimetype='application/json')
+    res = app.response_class(response=json.dumps(
+        [dict(w) for w in songwriters]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 
 @app.route('/searchArtist/<string:aname>', methods=['GET'])
@@ -80,7 +92,10 @@ def searchArtist(aname):
         'Select song.title,song.genre,song.year,song.language from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said where artist.aname = ?', [aname]).fetchall()
     conn.commit()
     conn.close()
-    return app.response_class(response=json.dumps([dict(s) for s in songs]), status=200, mimetype='application/json')
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 
 @app.route('/searchProducer/<string:pname>', methods=['GET'])
@@ -91,7 +106,10 @@ def searchProducer(pname):
         'Select song.title,song.genre,song.year,song.language from song join produce on song.sid = produce.psid join producer on producer.pid = produce.ppid where producer.pname = ?', [pname]).fetchall()
     conn.commit()
     conn.close()
-    return app.response_class(response=json.dumps([dict(s) for s in songs]), status=200, mimetype='application/json')
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 
 @app.route('/searchSongWriter/<string:wname>', methods=['GET'])
@@ -102,10 +120,14 @@ def searchSongWriter(wname):
         'Select song.title,song.genre,song.year,song.language from song join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where songwriter.wname = ?', [wname]).fetchall()
     conn.commit()
     conn.close()
-    return app.response_class(response=json.dumps([dict(s) for s in songs]), status=200, mimetype='application/json')
-
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 # Delete account
+
+
 @app.route('/delete')
 def delete_account(memID):
     conn = get_db_connection()
