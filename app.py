@@ -10,14 +10,6 @@ def get_db_connection():
     return conn
 
 
-@app.route('/')
-def index():
-    conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts').fetchall()
-    conn.close()
-    return render_template('index.html', posts=posts)
-
-
 @app.route('/register')
 def register():
     conn = get_db_connection()
@@ -26,6 +18,14 @@ def register():
     conn.commit()
     conn.close()
     return render_template('index.html', posts=posts)
+
+
+'''@app.route('/')
+def index():
+    conn = get_db_connection()
+    posts = conn.execute('SELECT * FROM posts').fetchall()
+    conn.close()
+    return render_template('index.html', posts=posts)'''
 
 
 @app.route('/listSong/<string:mid>', methods=['GET'])
@@ -39,16 +39,37 @@ def songList(mid):
     return app.response_class(response=json.dumps([dict(s) for s in songs]), status=200, mimetype='application/json')
 
 
-'''@app.route('/listArtist/<string:mid>', methods=['GET'])
+@app.route('/listArtist/<string:mid>', methods=['GET'])
 def artistList(mid):
-    
+    conn = get_db_connection()
+    db = conn.cursor()
+    artists = db.execute(
+        'Select artist.aname,artist.abirth,artist.agender,artist.acountry from artist join follow_artist on artist.aid = follow_artist.faaid where follow_artist.famid = ?', [mid]).fetchall()
+    conn.commit()
+    conn.close()
+    return app.response_class(response=json.dumps([dict(a) for a in artists]), status=200, mimetype='application/json')
+
 
 @app.route('/listSongWriter/<string:mid>', methods=['GET'])
 def songWriterList(mid):
-    
+    conn = get_db_connection()
+    db = conn.cursor()
+    songwriters = db.execute(
+        'Select songwriter.wname,songwriter.wbirth,songwriter.wgender,songwriter.wcountry from songwriter join follow_songwriter on songwriter.wid = follow_songwriter.fswid where follow_songwriter.fsmid = ?', [mid]).fetchall()
+    conn.commit()
+    conn.close()
+    return app.response_class(response=json.dumps([dict(w) for w in songwriters]), status=200, mimetype='application/json')
+
 
 @app.route('/listProducer/<string:mid>', methods=['GET'])
-def producerList(mid):'''
+def producerList(mid):
+    conn = get_db_connection()
+    db = conn.cursor()
+    songwriters = db.execute(
+        'Select producer.pname,producer.pbirth,producer.pgender,producer.pcountry from producer join follow_producer on producer.pid = follow_producer.fppid where follow_producer.fpmid = ?', [mid]).fetchall()
+    conn.commit()
+    conn.close()
+    return app.response_class(response=json.dumps([dict(w) for w in songwriters]), status=200, mimetype='application/json')
 
 
 @app.route('/searchArtist/<string:aname>', methods=['GET'])
@@ -57,6 +78,28 @@ def searchArtist(aname):
     db = conn.cursor()
     songs = db.execute(
         'Select song.title,song.genre,song.year,song.language from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said where artist.aname = ?', [aname]).fetchall()
+    conn.commit()
+    conn.close()
+    return app.response_class(response=json.dumps([dict(s) for s in songs]), status=200, mimetype='application/json')
+
+
+@app.route('/searchProducer/<string:pname>', methods=['GET'])
+def searchProducer(pname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    songs = db.execute(
+        'Select song.title,song.genre,song.year,song.language from song join produce on song.sid = produce.psid join producer on producer.pid = produce.ppid where producer.pname = ?', [pname]).fetchall()
+    conn.commit()
+    conn.close()
+    return app.response_class(response=json.dumps([dict(s) for s in songs]), status=200, mimetype='application/json')
+
+
+@app.route('/searchSongWriter/<string:wname>', methods=['GET'])
+def searchSongWriter(wname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    songs = db.execute(
+        'Select song.title,song.genre,song.year,song.language from song join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where songwriter.wname = ?', [wname]).fetchall()
     conn.commit()
     conn.close()
     return app.response_class(response=json.dumps([dict(s) for s in songs]), status=200, mimetype='application/json')
