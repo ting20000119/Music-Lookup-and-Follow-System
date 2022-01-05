@@ -128,7 +128,7 @@ def searchSongWriter(wname):
 # Delete account
 
 
-@app.route('/delete')
+@app.route('/delete/<int:memID>',methods=['DELETE'])
 def delete_account(memID):
     conn = get_db_connection()
     result = conn.execute(
@@ -141,9 +141,7 @@ def delete_account(memID):
         return "successful delete."
 
 # login
-
-
-@app.route('/login')
+@app.route('/login/<int:memID>', methods=['GET'])
 def login(memID):
     conn = get_db_connection()
     result = conn.execute(
