@@ -16,7 +16,8 @@ let login = async () => {
     let Status = 0;
     let Message = "";
     /*fetch 那裡放api*/ 
-    let res = await fetch("", {
+    var url = "http://127.0.0.1:5000/login/"+account.value;
+    let res = await fetch(url, {
     method: "POST",
     headers: {
         "Content-type": "application/json",
@@ -31,8 +32,8 @@ let login = async () => {
         Message = "Something Wrong";
     });
     if (Status === 200 || Status === 201) {//成功
-        window.localStorage.setItem("UID", res.username);
-        window.localStorage.setItem("name", res.name);
+        window.localStorage.setItem("UID", res.MID);
+        window.localStorage.setItem("name", res.MName);
         window.location.href = "signup.html";
     } else {
         window.alert(res.message);
