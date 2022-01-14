@@ -80,6 +80,63 @@ def searchArtist(aname):
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
+
+# Test Code ###############
+@app.route('/searchArtistTest/<string:aname>', methods=['GET'])
+def searchArtistTest(aname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    songs = db.execute(
+        'Select song.title,song.genre,song.year,song.language,artist.aname,producer.pname,songwriter.wname from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said join produce on song.sid = produce.psid  join producer on producer.pid = produce.ppid join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where artist.aname = ?', [aname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
+
+@app.route('/searchProducerTest/<string:pname>', methods=['GET'])
+def searchProducerTest(pname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    songs = db.execute(
+        'Select song.title,song.genre,song.year,song.language,artist.aname,producer.pname,songwriter.wname from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said join produce on song.sid = produce.psid  join producer on producer.pid = produce.ppid join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where producer.pname = ?', [pname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
+
+@app.route('/searchSongWriterTest/<string:wname>', methods=['GET'])
+def searchSongWriterTest(wname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    songs = db.execute(
+        'Select song.title,song.genre,song.year,song.language,artist.aname,producer.pname,songwriter.wname from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said join produce on song.sid = produce.psid  join producer on producer.pid = produce.ppid join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where songwriter.wname = ?', [wname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
+
+@app.route('/searchSongTest/<string:title>', methods=['GET'])
+def searchSongTest(title):
+    conn = get_db_connection()
+    db = conn.cursor()
+    songs = db.execute(
+        'Select song.title,song.genre,song.year,song.language,artist.aname,producer.pname,songwriter.wname from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said join produce on song.sid = produce.psid  join producer on producer.pid = produce.ppid join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where song.title = ?', [title]).fetchall()
+    conn.commit()
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+####################
+
 # Find songs by this producer's name
 
 
