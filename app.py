@@ -66,6 +66,7 @@ def producerList(mid):
     return res
 
 
+# Find songs by this artist's name
 @app.route('/searchArtist/<string:aname>', methods=['GET'])
 def searchArtist(aname):
     conn = get_db_connection()
@@ -78,6 +79,8 @@ def searchArtist(aname):
         [dict(s) for s in songs]), status=200, mimetype='application/json')
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
+
+# Find songs by this producer's name
 
 
 @app.route('/searchProducer/<string:pname>', methods=['GET'])
@@ -92,6 +95,8 @@ def searchProducer(pname):
         [dict(s) for s in songs]), status=200, mimetype='application/json')
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
+
+# Find songs by this songwriter's name
 
 
 @app.route('/searchSongWriter/<string:wname>', methods=['GET'])
@@ -119,6 +124,51 @@ def searchSong(title):
         [dict(s) for s in songs]), status=200, mimetype='application/json')
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
+
+
+@app.route('/FindArtist/<string:aname>', methods=['GET'])  # Find this Artist
+def FindArtist(aname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    names = db.execute(
+        'Select artist.aname,artist.abirth,artist.agender,artist.acountry from artist where artist.aname = ?', [aname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(name) for name in names]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
+
+# Find this Producer
+@app.route('/FindProducer/<string:pname>', methods=['GET'])
+def FindProducer(pname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    names = db.execute(
+        'Select producer.pname,producer.pbirth,producer.pgender,producer.pcountry from producer where producer.pname = ?', [pname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(name) for name in names]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
+
+# Find this songwriter
+@app.route('/FindSongWriter/<string:wname>', methods=['GET'])
+def FindSongWriter(wname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    names = db.execute(
+        'Select songwriter.wname,songwriter.wbirth,songwriter.wgender,songwriter.wcountry from songwriter where songwriter.wname = ?', [wname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(name) for name in names]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
 # Delete account
 
 
