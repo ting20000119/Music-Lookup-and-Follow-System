@@ -10,24 +10,6 @@ def get_db_connection():
     return conn
 
 
-@app.route('/register')
-def register():
-    conn = get_db_connection()
-    posts = conn.execute(
-        'INSERT INTO MEMBER (MID,MNAME,MBIRTH,MGENDER,MCOUNTRY) VALUES (?,?,?,?,?)', (here))
-    conn.commit()
-    conn.close()
-    return render_template('index.html', posts=posts)
-
-
-'''@app.route('/')
-def index():
-    conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts').fetchall()
-    conn.close()
-    return render_template('index.html', posts=posts)'''
-
-
 @app.route('/listSong/<string:mid>', methods=['GET'])
 def songList(mid):
     conn = get_db_connection()
@@ -125,10 +107,22 @@ def searchSongWriter(wname):
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
+
+@app.route('/searchSong/<string:title>', methods=['GET'])
+def searchSong(title):
+    conn = get_db_connection()
+    db = conn.cursor()
+    songs = db.execute(
+        'Select song.title,song.genre,song.year,song.language from song where song.title= ?', [title]).fetchall()
+    conn.commit()
+    res = app.response_class(response=json.dumps(
+        [dict(s) for s in songs]), status=200, mimetype='application/json')
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 # Delete account
 
 
-@app.route('/delete/<int:memID>',methods=['DELETE'])
+@app.route('/delete/<int:memID>', methods=['DELETE'])
 def delete_account(memID):
     conn = get_db_connection()
     result = conn.execute(
@@ -141,6 +135,8 @@ def delete_account(memID):
         return "successful delete."
 
 # login
+
+
 @app.route('/login/<int:memID>', methods=['GET'])
 def login(memID):
     conn = get_db_connection()
