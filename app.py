@@ -31,6 +31,17 @@ def register(mid, mname, mbirth, mgender, mcountry):
         return "ID taken!"
 
 
+@app.route('/addSong/<string:sid>/<string:title>/<string:genre>/<int:year>/<string:language>', methods=['GET'])
+def addSong(sid, title, genre, year, language):
+    conn = get_db_connection()
+    db = conn.cursor()
+    db.execute(
+        'INSERT INTO song (sid, title, genre, year, language) VALUES(?, ?,?,?,?)', (sid, title, genre, year, language))
+    conn.commit()
+    conn.close()
+    return "success add"
+
+
 @app.route('/subscribeSongWriter/<string:mid>/<string:wid>', methods=['GET'])
 def subscribeSongWriter(mid, wid):
     conn = get_db_connection()
