@@ -12,6 +12,25 @@ def get_db_connection():
     return conn
 
 
+@app.route('/register/<string:mid>/<string:mname>/<string:mbirth>/<string:mgender>/<string:mcountry>', methods=['GET'])
+def register(mid, mname, mbirth, mgender, mcountry):
+    conn = get_db_connection()
+    db = conn.cursor()
+    uni = db.execute('SELECT * FROM member WHERE mid = ?', [mid]).fetchall()
+    conn.commit()
+    if not uni:
+        db.execute('INSERT INTO member (mid,mname,mbirth,mgender,mcountry) VALUES (?,?,?,?,?)',
+                   (mid, mname, mbirth, mgender, mcountry))
+        conn.commit()
+        conn.close()
+        print("register success")
+        return "register success"
+    else:
+        conn.close()
+        print("Already registered")
+        return "ID taken!"
+
+
 @app.route('/listSong/<string:mid>', methods=['GET'])
 def songList(mid):
     conn = get_db_connection()
