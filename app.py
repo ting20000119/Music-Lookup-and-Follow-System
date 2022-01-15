@@ -237,6 +237,5 @@ def login(mid):
         [dict(m) for m in member]), status=200, mimetype='application/json')
     return res
 
-
 if __name__ == '__main__':
     app.run(debug=True)
