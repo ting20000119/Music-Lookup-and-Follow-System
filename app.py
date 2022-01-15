@@ -1,7 +1,9 @@
 import sqlite3
 from flask import Flask, render_template
 import json
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)
 
 
 def get_db_connection():
@@ -20,7 +22,6 @@ def songList(mid):
     conn.close()
     res = app.response_class(response=json.dumps(
         [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
 
@@ -34,7 +35,6 @@ def artistList(mid):
     conn.close()
     res = app.response_class(response=json.dumps(
         [dict(a) for a in artists]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
 
@@ -48,7 +48,6 @@ def songWriterList(mid):
     conn.close()
     res = app.response_class(response=json.dumps(
         [dict(w) for w in songwriters]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
 
@@ -62,11 +61,9 @@ def producerList(mid):
     conn.close()
     res = app.response_class(response=json.dumps(
         [dict(w) for w in songwriters]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
 
-# Find songs by this artist's name
 @app.route('/searchArtist/<string:aname>', methods=['GET'])
 def searchArtist(aname):
     conn = get_db_connection()
@@ -77,67 +74,7 @@ def searchArtist(aname):
     conn.close()
     res = app.response_class(response=json.dumps(
         [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
     return res
-
-
-# Test Code ###############
-@app.route('/searchArtistTest/<string:aname>', methods=['GET'])
-def searchArtistTest(aname):
-    conn = get_db_connection()
-    db = conn.cursor()
-    songs = db.execute(
-        'Select song.title,song.genre,song.year,song.language,artist.aname,producer.pname,songwriter.wname from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said join produce on song.sid = produce.psid  join producer on producer.pid = produce.ppid join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where artist.aname = ?', [aname]).fetchall()
-    conn.commit()
-    conn.close()
-    res = app.response_class(response=json.dumps(
-        [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
-
-
-@app.route('/searchProducerTest/<string:pname>', methods=['GET'])
-def searchProducerTest(pname):
-    conn = get_db_connection()
-    db = conn.cursor()
-    songs = db.execute(
-        'Select song.title,song.genre,song.year,song.language,artist.aname,producer.pname,songwriter.wname from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said join produce on song.sid = produce.psid  join producer on producer.pid = produce.ppid join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where producer.pname = ?', [pname]).fetchall()
-    conn.commit()
-    conn.close()
-    res = app.response_class(response=json.dumps(
-        [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
-
-
-@app.route('/searchSongWriterTest/<string:wname>', methods=['GET'])
-def searchSongWriterTest(wname):
-    conn = get_db_connection()
-    db = conn.cursor()
-    songs = db.execute(
-        'Select song.title,song.genre,song.year,song.language,artist.aname,producer.pname,songwriter.wname from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said join produce on song.sid = produce.psid  join producer on producer.pid = produce.ppid join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where songwriter.wname = ?', [wname]).fetchall()
-    conn.commit()
-    conn.close()
-    res = app.response_class(response=json.dumps(
-        [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
-
-
-@app.route('/searchSongTest/<string:title>', methods=['GET'])
-def searchSongTest(title):
-    conn = get_db_connection()
-    db = conn.cursor()
-    songs = db.execute(
-        'Select song.title,song.genre,song.year,song.language,artist.aname,producer.pname,songwriter.wname from song join sing on song.sid = sing.ssid join artist on artist.aid = sing.said join produce on song.sid = produce.psid  join producer on producer.pid = produce.ppid join compose on song.sid = compose.csid join songwriter on songwriter.wid = compose.cwid where song.title = ?', [title]).fetchall()
-    conn.commit()
-    res = app.response_class(response=json.dumps(
-        [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
-####################
-
-# Find songs by this producer's name
 
 
 @app.route('/searchProducer/<string:pname>', methods=['GET'])
@@ -150,10 +87,7 @@ def searchProducer(pname):
     conn.close()
     res = app.response_class(response=json.dumps(
         [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
     return res
-
-# Find songs by this songwriter's name
 
 
 @app.route('/searchSongWriter/<string:wname>', methods=['GET'])
@@ -166,7 +100,6 @@ def searchSongWriter(wname):
     conn.close()
     res = app.response_class(response=json.dumps(
         [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
 
@@ -177,58 +110,13 @@ def searchSong(title):
     songs = db.execute(
         'Select song.title,song.genre,song.year,song.language from song where song.title= ?', [title]).fetchall()
     conn.commit()
+    conn.close()
     res = app.response_class(response=json.dumps(
         [dict(s) for s in songs]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
-
-@app.route('/FindArtist/<string:aname>', methods=['GET'])  # Find this Artist
-def FindArtist(aname):
-    conn = get_db_connection()
-    db = conn.cursor()
-    names = db.execute(
-        'Select artist.aname,artist.abirth,artist.agender,artist.acountry from artist where artist.aname = ?', [aname]).fetchall()
-    conn.commit()
-    conn.close()
-    res = app.response_class(response=json.dumps(
-        [dict(name) for name in names]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
-
-
-# Find this Producer
-@app.route('/FindProducer/<string:pname>', methods=['GET'])
-def FindProducer(pname):
-    conn = get_db_connection()
-    db = conn.cursor()
-    names = db.execute(
-        'Select producer.pname,producer.pbirth,producer.pgender,producer.pcountry from producer where producer.pname = ?', [pname]).fetchall()
-    conn.commit()
-    conn.close()
-    res = app.response_class(response=json.dumps(
-        [dict(name) for name in names]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
-
-
-# Find this songwriter
-@app.route('/FindSongWriter/<string:wname>', methods=['GET'])
-def FindSongWriter(wname):
-    conn = get_db_connection()
-    db = conn.cursor()
-    names = db.execute(
-        'Select songwriter.wname,songwriter.wbirth,songwriter.wgender,songwriter.wcountry from songwriter where songwriter.wname = ?', [wname]).fetchall()
-    conn.commit()
-    conn.close()
-    res = app.response_class(response=json.dumps(
-        [dict(name) for name in names]), status=200, mimetype='application/json')
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
 
 # Delete account
-
-
 @app.route('/delete/<int:memID>', methods=['DELETE'])
 def delete_account(memID):
     conn = get_db_connection()
@@ -241,19 +129,18 @@ def delete_account(memID):
     else:
         return "successful delete."
 
-# login
 
-
-@app.route('/login/<int:memID>', methods=['GET'])
-def login(memID):
+@app.route('/login/<string:mid>', methods=['GET'])
+def login(mid):
     conn = get_db_connection()
-    result = conn.execute(
-        'SELECT * FROM MEMBER WHERE MID = ?', (memID)).fetchone()
+    db = conn.cursor()
+    member = db.execute(
+        'Select member.mid,member.mname from member where mid = ?', [mid]).fetchall()
+    conn.commit()
     conn.close()
-    if result is None:
-        return None
-    else:
-        return (conn.MID, conn.MName)
+    res = app.response_class(response=json.dumps(
+        [dict(m) for m in member]), status=200, mimetype='application/json')
+    return res
 
 
 if __name__ == '__main__':
