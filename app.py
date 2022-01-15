@@ -31,6 +31,61 @@ def register(mid, mname, mbirth, mgender, mcountry):
         return "ID taken!"
 
 
+@app.route('/subscribeSongWriter/<string:mid>/<string:wid>', methods=['GET'])
+def subscribeSongWriter(mid, wid):
+    conn = get_db_connection()
+    db = conn.cursor()
+    db.execute(
+        'INSERT INTO follow_songwriter (fswid,fsmid) VALUES(?, ?)', (wid, mid))
+    conn.commit()
+    conn.close()
+    return "success subscribe"
+
+
+@app.route('/subscribeProducer/<string:mid>/<string:pid>', methods=['GET'])
+def subscribeProducer(mid, pid):
+    conn = get_db_connection()
+    db = conn.cursor()
+    db.execute(
+        'INSERT INTO follow_producer (fppid,fpmid) VALUES(?, ?)', (pid, mid))
+    conn.commit()
+    conn.close()
+    return "success subscribe"
+
+
+@app.route('/subscribeArtist/<string:mid>/<string:aid>', methods=['GET'])
+def subscribeArtist(mid, aid):
+    conn = get_db_connection()
+    db = conn.cursor()
+    db.execute(
+        'INSERT INTO follow_artist (faaid,famid) VALUES(?, ?)', (aid, mid))
+    conn.commit()
+    conn.close()
+    return "success subscribe"
+
+
+@app.route('/subscribeSong/<string:mid>/<string:sid>', methods=['GET'])
+def subscribeSong(mid, sid):
+    conn = get_db_connection()
+    db = conn.cursor()
+    db.execute(
+        'INSERT INTO add_list (almid,alsid) VALUES(?, ?)', (mid, sid))
+    conn.commit()
+    conn.close()
+    return "success subscribe"
+
+
+@app.route('/updateUser/<string:mid>/<string:mname>', methods=['GET'])
+def UpdateMember(mid, mname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    db.execute(
+        'UPDATE member SET mname=? WHERE mid = ?', (mname, mid))
+    conn.commit()
+    conn.close()
+    return "success update"
+
+
 @app.route('/listSong/<string:mid>', methods=['GET'])
 def songList(mid):
     conn = get_db_connection()
