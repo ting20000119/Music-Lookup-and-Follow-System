@@ -20,6 +20,8 @@ def songList(mid):
         'Select song.title,song.genre,song.year,song.language from song join add_list on song.sid = add_list.alsid where add_list.almid = ?', [mid]).fetchall()
     conn.commit()
     conn.close()
+    # print(songs)
+    # print(type(songs))
     res = app.response_class(response=json.dumps(
         [dict(s) for s in songs]), status=200, mimetype='application/json')
     return res
@@ -117,16 +119,24 @@ def searchSong(title):
 
 
 # Delete account
-@app.route('/delete/<int:memID>', methods=['DELETE'])
-def delete_account(memID):
+@app.route('/delete/<string:mid>', methods=['GET'])
+def delete_account(mid):
     conn = get_db_connection()
-    result = conn.execute(
-        'DELETE * FROM MEMBER WHERE MID = ?', (memID)).fetchone()
+    db = conn.cursor()
+    result = db.execute(
+        'Select member.mid from member where member.mid = ?', [mid]).fetchall()
     conn.commit()
-    conn.close()
-    if result is None:
+    print(result)
+    print(type(result))
+    if not result:
+        conn.close()
+        print("the account is not exist.")
         return "the account is not exist."
     else:
+        db.execute('Delete from member where mid = ?', [mid])
+        conn.commit()
+        conn.close()
+        print("successful delete.")
         return "successful delete."
 
 
