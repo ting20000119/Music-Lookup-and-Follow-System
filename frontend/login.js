@@ -29,11 +29,16 @@ let login = async () => {
         Message = "Something Wrong";
     });
     if (Status === 200 || Status === 201) {//成功
-        console.log("success");
+
+        console.log(res.length);
+        if(res.length <= 0){
+            window.alert("此帳號尚未註冊過");
+        }else{
+            window.localStorage.setItem("UID", res[0].mid);
+            window.localStorage.setItem("name", res[0].mname);
+            console.log(window.localStorage.getItem("name"))
+        }
         
-        window.localStorage.setItem("UID", res[0].mid);
-        window.localStorage.setItem("name", res[0].mname);
-        console.log(window.localStorage.getItem("name"))
         //window.location.href = "signup.html";
     } else {
         window.alert(res.message);
