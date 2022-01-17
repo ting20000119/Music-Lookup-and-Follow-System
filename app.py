@@ -12,6 +12,45 @@ def get_db_connection():
     return conn
 
 
+@app.route('/FindArtist/<string:aname>', methods=['GET'])  # Find this Artist
+def FindArtist(aname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    names = db.execute(
+        'Select artist.aid from artist where artist.aname = ?', [aname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(name) for name in names]), status=200, mimetype='application/json')
+    return res
+
+
+@app.route('/FindProducer/<string:pname>', methods=['GET'])
+def FindProducer(pname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    names = db.execute(
+        'Select producer.pid from producer where producer.pname = ?', [pname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(name) for name in names]), status=200, mimetype='application/json')
+    return res
+
+
+@app.route('/FindSongWriter/<string:wname>', methods=['GET'])
+def FindSongWriter(wname):
+    conn = get_db_connection()
+    db = conn.cursor()
+    names = db.execute(
+        'Select songwriter.wid from songwriter where songwriter.wname = ?', [wname]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(name) for name in names]), status=200, mimetype='application/json')
+    return res
+
+
 @app.route('/register/<string:mid>/<string:mname>/<string:mbirth>/<string:mgender>/<string:mcountry>', methods=['GET'])
 def register(mid, mname, mbirth, mgender, mcountry):
     conn = get_db_connection()
@@ -236,6 +275,7 @@ def login(mid):
     res = app.response_class(response=json.dumps(
         [dict(m) for m in member]), status=200, mimetype='application/json')
     return res
+
 
 if __name__ == '__main__':
     app.run(debug=True)
