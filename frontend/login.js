@@ -37,6 +37,7 @@ let login = async () => {
             window.localStorage.setItem("UID", res[0].mid);
             window.localStorage.setItem("name", res[0].mname);
             console.log(window.localStorage.getItem("name"))
+            window.location.href = "search.html";
         }
         
         //window.location.href = "signup.html";

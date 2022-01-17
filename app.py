@@ -51,6 +51,19 @@ def FindSongWriter(wname):
     return res
 
 
+@app.route('/FindSong/<string:name>', methods=['GET'])
+def FindSong(name):
+    conn = get_db_connection()
+    db = conn.cursor()
+    names = db.execute(
+        'Select song.sid from song where song.title = ?', [name]).fetchall()
+    conn.commit()
+    conn.close()
+    res = app.response_class(response=json.dumps(
+        [dict(name) for name in names]), status=200, mimetype='application/json')
+    return res
+
+
 @app.route('/register/<string:mid>/<string:mname>/<string:mbirth>/<string:mgender>/<string:mcountry>', methods=['GET'])
 def register(mid, mname, mbirth, mgender, mcountry):
     conn = get_db_connection()
