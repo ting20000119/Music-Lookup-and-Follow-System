@@ -87,11 +87,17 @@ def register(mid, mname, mbirth, mgender, mcountry):
 def addSong(sid, title, genre, year, language):
     conn = get_db_connection()
     db = conn.cursor()
-    db.execute(
-        'INSERT INTO song (sid, title, genre, year, language) VALUES(?, ?,?,?,?)', (sid, title, genre, year, language))
+    oldSong = db.execute(
+        'SELECT sid FROM song WHERE sid = ?', [sid]).fetchall()
     conn.commit()
-    conn.close()
-    return "success add"
+    if not oldSong:
+        db.execute(
+            'INSERT INTO song (sid, title, genre, year, language) VALUES(?, ?,?,?,?)', (sid, title, genre, year, language))
+        conn.commit()
+        conn.close()
+        return "success add"
+    else:
+        return "already have it"
 
 
 @app.route('/subscribeSongWriter/<string:mid>/<string:wid>', methods=['GET'])
