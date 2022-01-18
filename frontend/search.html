@@ -9,9 +9,12 @@
 </head>
 
 <body>
-    <h1 id="page"></h1>  <!--//"page_title"-->
-    <h1>歌曲查詢</h1>
-    <p>請輸入想要搜尋的歌曲</p>
+    <div class = "title">
+        <h1 id="page"></h1>  <!--//"page_title"-->
+        <h1>歌曲查詢</h1>
+        <p>請輸入想要搜尋的歌曲</p>
+    </div>
+    
     <div class="nax">
         <form class="song_form" action="#" onsubmit="PersonFunc(); return false">
             <select id="PersonType">
@@ -59,8 +62,12 @@
 
 
 <style>
+    
     body{
-        background-color: rgb(157, 71, 238);
+        background-color: rgb(71, 177, 238);
+    }
+    .title{
+        margin-left: 45%;
     }
     .nax{
         width: 393px;
