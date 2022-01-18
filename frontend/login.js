@@ -10,9 +10,6 @@ let login = async () => {
         return;
     } 
 
-    payload = {
-        username: account.value,
-    };
     let Status = 0;
     let Message = "";
     var url = "http://127.0.0.1:5000/login/"+account.value;
@@ -20,7 +17,6 @@ let login = async () => {
         method: 'GET'
     })
     .then((res) => {
-        //res = res.json()
         Status = res.status;
         console.log("Status = "+Status);
         return res.json();
@@ -39,8 +35,6 @@ let login = async () => {
             console.log(window.localStorage.getItem("name"))
             window.location.href = "search.html";
         }
-        
-        //window.location.href = "signup.html";
     } else {
         window.alert(res.message);
     }

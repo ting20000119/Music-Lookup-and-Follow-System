@@ -29,27 +29,13 @@ let signup = async() => {
         return;
     }
 
-
-    payload = {
-        username: account.value,
-        Name: name.value,
-        Country: Country.value,
-        Gender: Gender.value,
-        birthYear: birthYear.value
-    };
-
     let Status = 0;
     let Message = '';
     var url = "http://127.0.0.1:5000/register/"+account.value+"/"+name.value+"/"+birthYear.value+"/"+Gender.value+"/"+Country.value;
     console.log(url);
     let res = await fetch(url, {
         method: "GET",
-        /*headers: {
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify(payload)*/
     }).then(res => {
-        //console.log(res.text());
         Status = res.status;
         return res.text();
     }).catch(error => {
@@ -65,7 +51,6 @@ let signup = async() => {
         else{
             window.alert("已註冊過");
         }
-        //window.location.href = "login.html";
     }
     else {
         window.alert(result.message);
