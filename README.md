@@ -12,6 +12,12 @@
 
 ## Running the app
 
+資料庫初始:
+
+```
+python3 init_db.py
+```
+
 啟用後端 server : ( run on localhost:5000 )
 
 ```
